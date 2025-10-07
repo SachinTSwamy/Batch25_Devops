@@ -1,0 +1,60 @@
+                                                                                         Jenkins
+
+Note: Jenkins Mother Document (https://www.jenkins.io/doc/)
+Requirements of Jenkins
+  1. Resources 
+      RAM & ROM
+  2. Dependences
+      Java installation
+
+ Jenkins uses port :8080 
+ Jenkins folder/path :/var/lib/jenkins
+
+Info:
+     Java application(human readable lang) ----------High level lang/compiled-----------> .class file(java binary file/machine readable code)
+                                              ( javac is a compiler for java files)           ( Run .class file/binary file we need JVM)
+                                                                                           |-------------------JRE--------------------------|
+     |--------------------------------------------------- JDK( Java Development Kit) -------------------------------------------------------|
+
+Imp: 
+ INSTALLATION OF JENKINS
+    1. Download JDK from oracle website or from Linux apt package manager
+    2. Jenkins Java compactability ----> Java Support Policy ---> Select the version    
+       for Linux,
+              sudo apt update
+              sudo apt search jdk
+              sudo apt search jdk | grep 'openjdk-21'
+              sudo apt install -y openjdk-21-jdk  # -y --> yes or no automate
+              java --version
+    3. Jenkins install on ubuntu ---> Copy the LTS version ---> Paste it in terminal
+              sudo systemctl status jenkins
+    4. Edit the inbound rule of the VM/EC2
+              Add ----> Custome TCP ---> 8080 ---> Save it
+
+    5. Copy PublicIP-address_EC2:8080
+    6. sudo cat <path-for-jenkins-password>
+    7. paste it in Administrator password
+    8. install plugins
+    9. In jenkins Web Application,
+              Add username and password as a admin and password
+
+
+        Note:
+            systemctl is a linux cmd, system controller is a cmd line tool to control the system services or software services
+                control ---> status, stop, start, restart.
+            journalctl is to control the logs, where as systemctl is used to control the process
+                sudo journalclt -u jenkins
+                Default: sudo journalctl #Check system logs itself/ ubuntu os
+       
+        IMP:
+            PORT NO:
+              Default:
+                    SSH -----> 22
+                    HTTP ----> 80
+                    HTTPS ---> 443
+                    JENKINS -> 8080
+              IP Vs Port No
+                IP -------> is a connection for a communication in the internet or WWW for a application
+                Port No --> is a number that a each software or a application can communicate directly with internet
+
+   
