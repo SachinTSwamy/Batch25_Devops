@@ -1,0 +1,27 @@
+AWS
+
+
+
+
+
+
+
+
+
+                                                                                      8th OCT
+Lunch Template
+  AMI
+    Amazon machine image, its a prototype of a existing instance with all the configuration and s/w and application in it. ## You can say as a docker image
+    Practical,
+              1. Select a EC2 (that u want to create a copy of) ----> Actions --> image and template --> Create image
+                 image name --> "Check the box" Reboot instance( if u need data of "RAM" to be included in AMI) ----> *if required add volume by selecting snapshot of that volume --> Creat image
+
+              2. Create Lunch template ---> Name of LT ----> "check box" if u want auto scale EC2 ---> select the AMI --->
+                                            Select instance type (It will be for Auto scalled instance type) ----> Key pair name 
+                                            --> Network settings ---> Storage ---> Tags ----> " Create lunch template"
+
+   NOTE: 
+        Lunch Template vs Lunch Configuration
+          LT ---> its a modern mechnisum of lunching a template, where it provides a new feature called "Versioning" of Templates.
+          LC ---> its a traditional way of lunching a template , where any changes/edit in image needed to made, it has to be from selecting a new instance itself from the begining
+    
