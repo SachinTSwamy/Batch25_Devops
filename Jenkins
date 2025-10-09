@@ -70,3 +70,23 @@ Security
                   - is stable
                   - unstable 
                   - fails
+
+
+
+
+
+
+
+
+ Pipeline Jobs,
+      - General
+      - Triggers
+      - Pipeline
+             1. Pipeline Script
+             2. Pipeline Script from SCM 
+                  - Repo URL
+                  - Cren
+                  - Branch
+             3. Script Path ---> Jenkinsfile
+      - Advanced 
+      
