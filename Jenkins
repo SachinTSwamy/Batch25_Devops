@@ -1,0 +1,26 @@
+
+Security
+      Authentication and Authorization
+  1.Authentication
+    Jenkins Dashboard---> Manage jenkins ---> security ---> Users --->
+    
+    Note: Companies Uses ldap for adding users to the company
+
+  2.Authorization
+    Jenkins Dashboard---> Manage jenkins ---> security ---> Security
+          1. Legacy Mode ( old method)
+          2. Matrix based Security
+          3. Project based matrix authorization Security
+          4. Logged in Users ( Default)
+
+  3.Credentials
+    it contains username and password of other application or library 
+      1. username and password
+      2. SSH 
+      3. Secret text
+      4. Secret file
+
+  
+
+
+  
