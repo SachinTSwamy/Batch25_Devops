@@ -58,3 +58,18 @@ Imp:
                 Port No --> is a number that a each software or a application can communicate directly with internet
 
    
+ Every time EC2 is rebooted/stoped and started, you have to copy the public-ip of the EC2 to URL:port-no(8080) which is a tedious work, How to automate it
+
+      1. curl -s http://checkip.amazonaws.com
+      2. Go to ----> cd /var/lib/jenkins ---> cat jenkins.model.JenkinsLocationConfiguration.xml
+      3. Create a file jenkins_update_ip.sh
+          #!/bin/bash
+
+          echo "  
+
+              <jenkinsUrl>http://$(curl -s http://checkip.amazonaws.com):8080/</jenkinsUrl>
+                                                          > /var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
+
+          sudo systemctl restart jenkins
+      4. crontab -e
+          edit @reboot sudo bash /home/ubuntu/jenkins_update_ip.sh  
