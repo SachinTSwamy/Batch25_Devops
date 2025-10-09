@@ -73,3 +73,22 @@ Imp:
           sudo systemctl restart jenkins
       4. crontab -e
           edit @reboot sudo bash /home/ubuntu/jenkins_update_ip.sh  
+
+Groovy langauage
+ it is the file in which we write all our job configurations in Groovy.
+    - In our company, we are using a declarative pipeline in Jenkinsfile and we are maintaining 
+      Jenkinsfile through git.   
+Pipelines
+    1. Scripted ---> General purpose code
+        node{
+
+            }
+    2. Declarative ---> Pre defined code
+          pipeline{
+ 
+            }
+
+          - Agent    
+              1. Any ---> can run on any available executor
+              2. Label --> can run on particular executor
+              3. None
