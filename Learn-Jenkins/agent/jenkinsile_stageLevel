@@ -1,5 +1,5 @@
 Pipeline{
-
+ agent none
 
   stages{
     stage('BUILD'){
