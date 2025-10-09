@@ -2,9 +2,9 @@
 Security
       Authentication and Authorization
   1.Authentication
-    Jenkins Dashboard---> Manage jenkins ---> security ---> Users --->
+    Jenkins Dashboard---> Manage jenkins ---> security ---> Users ---> add User
     
-    Note: Companies Uses ldap for adding users to the company
+    Note: Companies Uses ldap(authentication tool/cmd)#Linux based OS for adding users to the company
 
   2.Authorization
     Jenkins Dashboard---> Manage jenkins ---> security ---> Security
@@ -20,7 +20,53 @@ Security
       3. Secret text
       4. Secret file
 
-  
+ Create a freestyle job with git push, jobs is built
+        Job,
+            SCM ---> git ---> credentials
+            Trigger--->Add Crontab # for checking the git push in repo, to built the new changes that are made in the code
+
+  4. Plugins
+       it extends the functionalityb of the application
+       ex:
+            Jenkins dashboard --> Manage jenkins --> System Config --> Plugins
+            available plugins --> 
+                        AWS crendentials ## downloads the plugins
+                        
 
 
-  
+ Jobs,
+      Freestyle
+      Pipeline
+      Folder
+      Multibranch pipeline
+
+   Freestyle
+      1. General 
+            - Enable project based Security
+            - Discard old Builds   --> 1. By No of Days 2. By No of Builds
+            - Github project
+            - this project is parameterized
+            - 
+
+      2. SCM
+            - None
+            - Git
+            - Subversion (Add by plugin # SVM plugins)
+
+      3. Trigger
+            - Trigger builds remotely
+            - Build after other projects are build # upstream and downstream
+                        if A jobs executes B jobs execute --downstream
+                        if B jobs executes A jobs execute --Upstream
+            - Build periodically # crontab
+            - Poll SCM
+            - GIthub hook trigger for GITScm Polling
+
+      Imp:
+            Build periodically vs Poll SCM?
+            Poll SCM vs Webhook 
+      6. Post build Actions
+            - Add post build actions
+                  - is stable
+                  - unstable 
+                  - fails
