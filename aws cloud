@@ -13,9 +13,9 @@ Datacenter
 
 Cloud Service Models
 There are three main cloud service models:
-  1. IaaS (Infrastructure as a Service): Provides virtual servers, storage, and networking. You manage OS and apps; the provider manages hardware. Example: AWS EC2.
-  2. PaaS (Platform as a Service): Lets you build and run applications without managing the underlying infrastructure. Example: AWS Elastic Beanstalk.
-  3. SaaS (Software as a Service): Fully ready-to-use software delivered over the internet. Everything is managed by the provider. Example: Gmail or Salesforce
+  1. IaaS (Infrastructure as a Service): Provides virtual servers, storage, and networking. You manage OS and apps; the provider manages hardware. Example: AWS EC2, S3, EBS, VPC.
+  2. PaaS (Platform as a Service): Lets you build and run applications without managing the underlying infrastructure. Example: AWS Elastic Beanstalk, RDS, Lambda, Ddb. 
+  3. SaaS (Software as a Service): Fully ready-to-use software delivered over the internet. Everything is managed by the provider. Example: Gmail, Salesforce, Zoom, Netflix.
 
 Deployment Models
 There are four main cloud deployment models:
@@ -214,5 +214,275 @@ Types of ELBs?
          Not used for normal web apps — for network inspection / security setups.
       
    4. Classic LB- Legacy
+
+  Auto Scaling Group:
+  It automatically adjusts the number of EC2 instances based on traffic or load.
+      If demand increases → it launches more instances.
+      If demand drops → it terminates extra instances to save cost.
+
+  Before scaling, you define the server setup using:
+      AMI (Amazon Machine Image): Defines the OS and software.
+      Launch Template / Configuration: Defines instance type, key pair, security groups, and storage.
+
+  Auto Scaling Group (ASG) settings:
+      Minimum capacity: Lowest number of instances to keep running (e.g., 2).
+      Desired capacity: Target number of instances to maintain.
+      Maximum capacity: Upper limit (e.g., 10) so it doesn’t scale endlessly.
+
+
+ ASG Feature
+   1.Scaling Policies – When to Add or Remove Servers
+        a) Scale Out (Add Instances)
+              Happens when load increases.
+              Trigger: A metric crosses a threshold.
+              Examples:
+                  CPU > 70% for 5 minutes → add 1 instance.
+                  Requests per target > 1000/sec → add 2 instances.
+        b) Scale In (Remove Instances)
+              Happens when load decreases.
+              Trigger: A metric drops below a threshold.
+              Example:
+                  CPU < 30% for 10 minutes → remove 1 instance.
+        
+   2. Metrics used:
+        1. CPU_Utilization
+        2. RequestCountPerTarget
+        3. Custom CloudWatch metrics
+
+   3. Health Checks & Auto-Replacement
+        The Auto Scaling Group (ASG) continuously monitors the health of instances:
+            1.  EC2 Status Checks: Detects stopped, failed, or impaired instances.
+            2.  ELB (Load Balancer) Health Checks: Periodically pings each instance (e.g., HTTP:80 /health).
+                           If an instance doesn’t respond, the LB stops routing traffic to it.
+If an instance is unhealthy, ASG terminates it and launches a new one automatically using the Launch Template.
+
+
+What is TCP and UDP Protocol?
+  TCP (Transmission Control Protocol) and UDP (User Datagram Protocol) are two core transport layer protocols used to send data over the internet, but they work very differently.
+      
+  TCP is connection-oriented.
+      It establishes a reliable connection between the sender and receiver before transmitting data. It guarantees that packets are delivered in the correct order and without errors. If any                        packet is lost, TCP retransmits it. Because of this reliability, TCP is slightly slower and has more overhead.
+          Use cases: Web browsing (HTTP/HTTPS), file transfers (FTP), emails (SMTP), databases — basically, anything that needs guaranteed delivery.
+      
+      UDP is connectionless.
+      It sends packets (called datagrams) without establishing a dedicated connection and doesn’t guarantee delivery, order, or error checking. It’s faster and has lower latency because                               there’s no handshake or retransmission mechanism. However, if packets are lost, the application itself must handle it.
+            Use cases: Live video/audio streaming, gaming, DNS queries — situations where speed matters more than perfect accuracy.
+      
+      In short:
+            TCP = Reliable, Ordered, Connection-based, Slower
+            UDP = Fast, Lightweight, Unreliable (no guarantees), Best-effort
+
+
+
+Security Group
+    A Security Group in AWS acts as a virtual firewall for your EC2 instances, controlling both inbound and outbound traffic at the instance level. It’s attached to the Elastic Network              Interface (ENI) or directly to the instance, and AWS evaluates it for every packet entering or leaving.
+    
+    One of the most important characteristics of Security Groups is that they’re stateful. This means if an inbound request is allowed, the corresponding outbound response is automatically          allowed, even if there isn’t a specific outbound rule for it. The same applies in reverse.
+
+    Security Groups consist of inbound and outbound rules:
+           1. Inbound rules define what kind of traffic can enter the instance — for example, allowing HTTP traffic from anywhere or SSH only from a specific admin IP.
+           2. Outbound rules define what traffic the instance can send out.
+    Each rule specifies the protocol, port range, traffic type, and the source or destination, which can be an IP range (CIDR) or another security group.
+    
+    A key point to remember is that Security Groups are allow-only. You can only add “allow” rules; there are no explicit “deny” rules. If something isn’t allowed, it’s automatically denied.        Also, any changes made to a Security Group are applied in real time to all attached instances.
+    
+    For example, a typical SSH rule might look like this:
+              Type: SSH
+              Protocol: TCP
+              Port range: 22
+              Source: 203.0.113.25/32 (specific admin IP)
+              Description: Admin SSH Access
+
+
+ ENI
+    An Elastic Network Interface (ENI) is a virtual network interface in AWS that provides network connectivity for EC2 instances. Think of it as a virtual network card. Every EC2 instance         has at least one primary ENI attached by default, and you can attach additional ENIs based on your architecture requirements.
+
+    An ENI contains several key elements:
+        1. A primary private IPv4 address (mandatory) and optionally secondary private IP addresses.
+        2. A public IPv4 address if auto-assigned or an Elastic IP if you want a fixed public IP.
+        3. One or more Security Groups that define inbound and outbound traffic rules.
+        4. A unique MAC address, and optionally IPv6 addresses if enabled.
+    
+    There are two types of ENIs:
+       1. Primary ENI: This is automatically created when you launch an EC2 instance. It can’t be detached because it’s the main network interface.
+       2. Secondary ENIs: These can be created manually and attached or detached from instances within the same subnet and Availability Zone. They can even be moved between instances.
+    
+    Why use multiple ENIs?
+    1. Traffic Segregation: For example, you can attach two ENIs to a single instance — one for management traffic and another for application traffic.
+       1. The management ENI can be placed in a private subnet accessible only through VPN or internal networks, restricted to SSH or RDP for administrators.    
+       2. The application ENI can be placed in a public subnet with a public or Elastic IP, serving web traffic on HTTP/HTTPS ports. This separation improves security and network control.
+    
+    2. High Availability & Failover: If an instance fails, you can detach the ENI and attach it to a replacement instance. Because the ENI retains its private IP, public IP (if Elastic), and            MAC address, this provides a seamless recovery without forcing clients to update IPs.
+    3. Multi-homing: You can assign multiple IPs to a single instance, which is useful for scenarios like hosting multiple websites on one server.
+
+
+EIP
+  An Elastic IP (EIP) in AWS is a static, public IPv4 address that you can allocate to your AWS account and associate with EC2 instances or network interfaces. Unlike a regular public IP,        which changes if you stop or terminate the instance, an Elastic IP remains fixed until you explicitly release it. This makes it ideal for scenarios where you need a consistent, publicly      reachable IP address, such as hosting production websites, configuring DNS records, or enabling failover setups.
+
+  The main reason AWS differentiates between normal public IPs and EIPs is because public IPv4 addresses are limited resources. By default, AWS assigns dynamic public IPs so that they can be     recycled when not in use, helping optimize IP address utilization and keeping costs low for users who don’t require static addresses.
+
+  However, Elastic IPs are chargeable if allocated but not in use. For example, if you reserve an EIP but don’t associate it with a running resource, AWS charges you to discourage waste of       IPs.
+
+  Typical use cases for EIPs include:
+    Ensuring a fixed IP for production servers, so DNS records don’t need frequent updates.
+    Enabling quick recovery and failover by detaching the EIP from a failed instance and reattaching it to a standby instance, without changing client configurations.
+
+
+
+
+Why Do We Need Elastic IPs (EIPs)?
+   Elastic IPs provide a stable, public-facing IP address for your AWS resources. Unlike standard public IPs that can change when an instance is stopped or restarted, EIPs remain constant        until you release them. This stability is essential for production workloads and external connectivity.
+
+   Key Reasons to Use Elastic IPs:
+    
+    Firewall Whitelisting:
+    Many clients or external systems only accept traffic from pre-approved IP addresses. Using an EIP ensures your instance’s IP remains consistent, avoiding disruptions caused by changing         public IPs.
+    
+    DNS Stability:
+    DNS records need to point to a fixed IP. Without an EIP, you would have to update DNS records every time an instance restarts. Elastic IPs eliminate this issue, keeping your DNS mappings       stable.
+    
+    Failover & High Availability:
+    If an instance fails, you can disassociate the EIP from the failed instance and attach it to a standby or replacement instance in the same subnet/AZ. The new instance immediately               receives the same public IP, ensuring uninterrupted connectivity without updating DNS or firewall rules.
+    
+    Internet Access for Private IPs:
+    To allow external access, each private IP on an ENI must be mapped to a public IP. Elastic IPs provide this mapping reliably.
+  
+  Rules and Limits:
+     1. Each Elastic IP can be associated with one private IP per ENI.
+     2. AWS provides 5 Elastic IPs per region by default (you can request more if needed).
+     3. Unused EIPs incur charges, so release them back to AWS when not in use to avoid unnecessary costs.
+
+
+
+What is HTTP, HTTPS, SSH, RDP, FTP, SMTP?
+    1. HTTP (Hypertext Transfer Protocol):
+      Protocol used for transferring web pages over the internet.
+      Port: 80
+      Unsecured: Data is sent in plain text, so it can be intercepted.
+      Use case: Standard website browsing where encryption isn’t critical.
+      
+    2. HTTPS (Hypertext Transfer Protocol Secure):
+      Secure version of HTTP using TLS/SSL encryption.
+      Port: 443
+      Encrypted & authenticated: Ensures data confidentiality, integrity, and server authentication.
+      Use case: Online banking, e-commerce, and any site handling sensitive data.
+      
+    3. SSH (Secure Shell):
+      Protocol for secure remote access to servers over a network.
+      Port: 22
+      Encrypted: Commands and data are encrypted end-to-end.
+      Use case: Admin access to Linux/Unix servers for management and configuration.
+      
+    4. RDP (Remote Desktop Protocol):
+      Microsoft protocol for remote desktop access to Windows machines.
+      Port: 3389
+      Encrypted: Can use network-level authentication for security.
+      Use case: Remote administration or user access to Windows desktops/servers.
+      
+    5. FTP (File Transfer Protocol):
+      Protocol for transferring files between client and server.
+      Ports: 20 (data), 21 (control)
+      Unsecured by default: Credentials and data are in plain text. Secure alternatives include SFTP or FTPS.
+      Use case: Uploading/downloading website files or backups.
+      
+    6. SMTP (Simple Mail Transfer Protocol):
+      Protocol for sending emails between servers.
+      Port: 25 (standard), 587 (submission), 465 (SMTPS)
+      Use case: Email delivery from applications or mail servers to other mail servers.
+
+
+
+
+Common Protocols and Ports:
+      
+      HTTP:           80 (used for unsecured web traffic)
+      HTTPS:          443 (secure web traffic via TLS/SSL)
+      SSH:            22 (secure remote login for Linux/Unix servers)
+      RDP:            3389 (remote desktop access for Windows)
+      FTP:            21 (control), 20 (data) – unencrypted by default; SFTP/FTPS are secure alternatives
+      SMTP:           25 (server-to-server mail transfer), 587 (mail submission), 465 (secure SMTP/SMTPS)
+      DNS:            53 (UDP for queries, TCP for zone transfers)
+      Telnet:         23 (unencrypted remote access – largely obsolete)
+      IMAP:           143 (email retrieval), 993 (IMAP over SSL)
+      POP3:           110 (email retrieval), 995 (POP3 over SSL)
+      MySQL:          3306 (database access)
+      PostgreSQL:     5432 (database access)
+
+
+KEY-PAIR
+
+Key Pairs & SSH Access in AWS
+
+What is a Key Pair?
+    A Key Pair is a set of cryptographic security credentials used to securely connect to your EC2 instances. It functions like a lock-and-key system:
+    
+    Private Key (.pem or .ppk file):
+      Stored securely on your local machine.
+      Never shared or uploaded to AWS.
+        
+    Public Key:
+      Stored in AWS and automatically injected into the EC2 instance during launch.
+      Works with the private key to authenticate your connection.
+
+
+Why Key Pairs Are Important:    
+  Security:
+    Only someone with the private key can access the instance. This is much safer than using a username/password combination.
+    
+  Authentication:
+    Verifies that the person connecting is the rightful owner of the key pair.
+    
+  One-Time Setup:
+    AWS provides the private key only once when creating the pair.
+      Important: If you lose it, you cannot download it again—you must create a new key pair and update the instance configuration.
+
+
+Ways to Connect to a Linux EC2 Instance
+
+1) SSH (Secure Shell) — Most Common Method
+    
+    Description: Traditional method using port 22 and a private key (.pem).
+    Requirements:
+        EC2 must have a public IP or Elastic IP.
+        Port 22 open in the Security Group.
+        Private key (.pem) downloaded from AWS.
+    Command:
+        ssh -i my-key.pem ec2-user@<Public-IP>
+    Use case: Standard admin access for most Linux instances.
+    
+2) EC2 Instance Connect (Browser-based SSH)
+    
+    Description: Connect directly from the AWS Console using temporary keys managed by AWS.
+    Requirements: IAM permissions for EC2 Instance Connect, instance allows SSH (port 22).
+    Pros: No PEM file required, works from anywhere, temporary credentials for security.
+    Cons: IAM setup needed; still requires SSH port open.
+    How to use: EC2 Console → Select instance → Connect → EC2 Instance Connect → Click “Connect”.
+    
+3) Session Manager (AWS Systems Manager)
+    
+    Description: Secure connection without SSH, public IP, or open ports. Works via SSM Agent.
+    Requirements:
+        SSM Agent installed (default on Amazon Linux 2 / Ubuntu).
+        IAM role with AmazonSSMManagedInstanceCore policy.
+        Outbound internet access (via NAT Gateway or VPC Endpoint).
+    Pros: No key pairs, no open SSH ports, IAM-controlled, logs auditable via CloudTrail/CloudWatch.
+    Use case: Enterprise/production environments, private subnets.
+    Command:
+        aws ssm start-session --target <instance-id>
+    
+4) AWS CloudShell (Console Terminal)
+    
+    Description: Browser-based terminal in AWS Console.
+    Use: Execute CLI commands to connect to EC2 via Instance Connect or Session Manager.
+    Example:
+    aws ssm start-session --target <instance-id>  
+        
+5) EC2 Serial Console (Advanced / Troubleshooting)
+    Description: Direct console access similar to a physical serial port.
+    Requirements:
+          Enable EC2 Serial Console in account settings.
+          Works only on Nitro-based instances.
+          IAM permission: ec2-instance-connect:SendSerialConsoleSSHPublicKey.
+    Use case: Troubleshoot boot issues, firewall misconfigurations, or failed SSH/SSM connections.
 
 
