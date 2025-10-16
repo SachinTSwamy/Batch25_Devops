@@ -1,0 +1,218 @@
+                                                                                              AWS
+
+ Accessing AWS: You can interact with AWS through:
+       1. AWS Management Console (web-based GUI)
+       2. AWS CLI (command-line interface)
+       3. AWS SDKs (programmatically through supported programming languages)
+
+On Premise
+  On-premise refers to IT infrastructure, applications, and services that are hosted and managed within an organization’s own physical data centers, rather than on a public or private cloud.    All hardware, software, networking, security, and maintenance responsibilities lie with the organization itself. This setup gives companies complete control over their infrastructure and      data, which is often required for compliance or security reasons, but it also involves higher costs for setup, scaling, and ongoing management compared to cloud environments.
+
+Datacenter
+  Cloud computing is a model where computing resources like servers, storage, and software are delivered over the internet on a pay-as-you-go basis. Instead of relying on on-premise data        centers, organizations use cloud platforms for scalable and flexible infrastructure.
+
+Cloud Service Models
+There are three main cloud service models:
+  1. IaaS (Infrastructure as a Service): Provides virtual servers, storage, and networking. You manage OS and apps; the provider manages hardware. Example: AWS EC2.
+  2. PaaS (Platform as a Service): Lets you build and run applications without managing the underlying infrastructure. Example: AWS Elastic Beanstalk.
+  3. SaaS (Software as a Service): Fully ready-to-use software delivered over the internet. Everything is managed by the provider. Example: Gmail or Salesforce
+
+Deployment Models
+There are four main cloud deployment models:
+  1. Public Cloud: Resources are owned and managed by a third-party provider and shared with multiple organizations. Example: AWS, Azure.
+  2. Private Cloud: Infrastructure is dedicated to a single organization, either on-premise or hosted by a provider. Example: VMware vSphere private setup.
+  3. Hybrid Cloud: Combines public and private clouds, allowing data and applications to move between them for flexibility and scalability.
+  4. Community Cloud: Shared infrastructure for a specific community of organizations with common requirements, like security or compliance. Example: government or healthcare clouds.
+
+What is Web Server and What is Application Server? Difference between them?
+  1. A Web Server handles HTTP requests from clients, serving static content like HTML, CSS, and images. Examples are Apache HTTP Server and Nginx.
+  2. An Application Server runs business logic and dynamic content, processing requests from clients and interacting with databases or other services. Examples are Tomcat, JBoss, and WebLogic.
+
+  Key Differences:        Web Server                                    Application Server
+    Purpose:    Web server → serves static content;             Application server → executes application logic.
+    Processing: Web server handles HTTP requests;               Application server handles complex operations and backend logic.
+    Examples:   Web server → Nginx, Apache;                     Application server → Tomcat, JBoss.
+
+AWS Global Infrastructure
+  1. Region: A Region is a physical location, like Mumbai, Singapore, or N. Virginia. Each Region is isolated from others, usually containing 2 or more Availability Zones. You choose a                    Region based on latency, compliance, and cost. Most AWS resources are Region-specific, though some services like IAM and Route 53 are global.
+  2. Availability Zone (AZ): An AZ is one or more isolated data centers within a Region, designed for redundancy. AZs are close enough for fast replication but separated to avoid single                                    points of failure. Using multiple AZs allows highly available system design.
+  3. Edge Location: These are small AWS sites near users to deliver content faster and handle DNS queries. Services like CloudFront, Route 53, and Lambda@Edge use Edge Locations to reduce                         latency, but they don’t host full applications.
+  4. Local Zone (optional add-on): Extends a Region closer to end users to provide ultra-low latency for compute, storage, and other services.
+
+Why we need multiple regions?
+    Multiple regions are used to make applications resilient, compliant, and high-performing.
+    1. Geographic distribution & latency: Placing resources closer to users reduces latency and improves performance.
+    2. Compliance & data sovereignty: Certain regulations require data to stay within specific countries.
+    3. Disaster recovery & business continuity: If one region fails due to a disaster or outage, workloads can run from another region.
+    4. Fault isolation: Regions are fully independent, so failures in one won’t affect others.
+    5. Load distribution: Workloads can be spread across regions to prevent overloading a single region.”
+
+
+Why we need multiple AZs?
+    Multiple Availability Zones (AZs) are used to ensure high availability, fault tolerance, and zero downtime within a region.    
+    1. High Availability & Fault Tolerance: AZs are physically separate data centers with independent power, cooling, and networking, so if one fails, others continue running.
+    2. Automatic Failover: Services like RDS Multi-AZ automatically maintain standby replicas and fail over seamlessly.
+    3. Zero-Downtime Deployments & Maintenance: You can perform rolling updates or maintenance in one AZ without affecting application availability.
+    4. Compliance: Multi-AZ setups help meet fault-tolerance requirements for certain industries.
+    5. Local Zones: AWS also provides Local Zones in cities like Delhi to reduce latency for end users. These aren’t full regions but help deliver ultra-low-latency services closer to users,                      with plans to expand to other Indian metros.
+
+Differences between AWS Local Zones and Edge Locations?
+  AWS Local Zones and Edge Locations both bring AWS closer to users, but they serve different purposes:
+  Purpose & Use Cases:
+        Local Zones: Extend a region to provide compute and storage services closer to large population centers for ultra-low-latency applications, like gaming, media streaming, or real-time                       workloads.
+        Edge Locations: Focus on content delivery and caching via CloudFront, DNS resolution with Route 53, and lightweight edge computing.
+        
+  Services Available:
+        Local Zones: Provide core AWS services like EC2, EBS, VPC, ELB, and RDS—a subset of full region services.
+        Edge Locations: Limited to CDN, Route 53, WAF, Shield, Lambda@Edge, and CloudFront Functions.
+
+AWS Service: 
+          These are collections of tools and functionalities that help users perform specific cloud tasks, like computing, storage, or networking. Examples include EC2 for compute, 
+          S3 for storage, and RDS for databases.
+
+AWS Resources :
+          are the actual components you use to build and run applications in the cloud, such as EC2 instances, S3 buckets, or RDS databases. Services provide the functionality,
+          while resources are the items you create and manage to use those services
+
+What is EC2?When/Why to Use EC2 - Use Cases:
+  Amazon EC2 (Elastic Compute Cloud) is a web service that provides resizable virtual servers, called instances, in the cloud. It allows you to run applications without managing physical       hardware.
+  When/Why to Use EC2 – Use Cases:
+        Web Hosting: Run websites or web applications.
+        Application Hosting: Deploy custom business applications.
+        Batch Processing & Compute-Intensive Workloads: Handle data processing, simulations, or machine learning tasks.
+        Development & Testing Environments: Quickly provision and scale servers for testing or development.
+        Disaster Recovery: Launch instances in another region or AZ for backup and failover.
+
+Main EC2 Instance Families?
+      Amazon EC2 instances are grouped into families based on workload needs:
+        General Purpose: Balanced CPU, memory, and networking. Suitable for web servers and small databases. Examples: t3, t4g, m5.
+        Compute Optimized: High CPU performance for compute-intensive tasks like batch processing or gaming servers. Examples: c5, c6g.
+        Memory Optimized: High RAM for memory-intensive applications like databases, caching, and analytics. Examples: r5, x1e.
+        Storage Optimized: High, fast storage for large-scale data processing, NoSQL databases, and data warehousing. Examples: i3, d2.
+        Accelerated Computing: Includes GPUs or FPGAs for machine learning, graphics, or scientific computing. Examples: p4, g5.
+
+
+How to Choose Instance Types?
+  When selecting an EC2 instance, first consider the workload:
+    Balanced workloads: General Purpose instances (t, m)
+    CPU-heavy tasks: Compute Optimized (c)
+    Memory-intensive applications: Memory Optimized (r, x)
+    Storage-heavy workloads: Storage Optimized (i, d)
+    AI/ML or graphics tasks: GPU/Accelerated instances (p, g)
+  Next, consider scale and pricing: Start small for dev/test (e.g., t2.micro, t3.micro) and scale to enterprise workloads (e.g., m5, r5, c5) as needed, balancing performance with cost.
+
+
+EC2 offers four main pricing models, balancing flexibility, commitment, and cost:
+      1. On-Demand Instances: Pay per hour or second with no long-term commitment. Ideal for testing, dev, or unpredictable workloads. Example: t3.micro ≈ ₹0.85/hr. Like booking a taxi—you                                 pay only for what you use.
+      2. Reserved Instances (RI): Commit for 1 or 3 years for specific instance types and regions. Up to 72% cheaper.
+                  1. Standard RIs: Can change size within the same family or AZ.
+                  2. Convertible RIs: Can switch to another instance of equal or higher value while keeping the term.
+                        Use case: steady, predictable workloads like databases.
+      3. Spot Instances: Use unused EC2 capacity at up to 90% discount. AWS can reclaim with 2-minute notice. Ideal for flexible, stateless, fault-tolerant workloads like big data or CI/CD.                          Example: c5.large on-demand ≈ $8/hr, spot ≈ $2/hr.
+      4. Savings Plans: Commit to a $/hr spend for 1 or 3 years. Flexible across instance families, sizes, and regions, saving up to 66%. Any usage above the commitment is billed On-Demand.                            Like a monthly gym membership—you pay fixed, use any machine.
+      These models let you optimize cost based on workload predictability and flexibility needs.”
+
+      Example Scenario – Startup Website:
+                Week 1: Dev/test → On-Demand
+                After 3 months: Stable site → 1-yr Reserved for cost savings
+                Batch video processing → Spot Instances
+                Unsure about instance type → Savings Plan for discounted flexibility
+
+
+What is SSL and What is TLS?
+    SSL (Secure Sockets Layer) and TLS (Transport Layer Security) are cryptographic protocols used to secure communication over networks, like the internet. They encrypt data between clients     and servers to ensure confidentiality, integrity, and authentication.
+        SSL: Older protocol, now largely deprecated due to security vulnerabilities.
+        TLS: Successor to SSL, more secure and efficient. Modern websites and applications use TLS to encrypt data, authenticate servers, and optionally authenticate clients.
+
+                                                                                            8th OCT
+
+AMI
+    Amazon machine image, its a prototype of a existing instance with all the configuration and s/w and application in it. ## You can say as a custom docker image
+    Types of AMI
+      1. AWS provided AMIs
+      2. Custom AMIs
+      3. Marketplace AMIs
+
+Why are AMIs Important?
+    Consistency → All servers look and behave the same.
+    Speed → No need to manually install software every time.
+    Scalability → Essential for Auto Scaling Groups.
+    Disaster Recovery → Quickly re-launch failed instances.
+
+
+    Practical,
+              1. Select a EC2 (that u want to create a copy of) ----> Actions --> image and template --> Create image
+                 image name --> "Check the box" Reboot instance( if u need data of "RAM" to be included in AMI) ----> *if required add volume by selecting snapshot of that volume -->                                          Create image
+
+              2. Create Lunch template ---> Name of LT ----> "check box" if u want auto scale EC2 ---> select the AMI --->
+                                            Select instance type (It will be for Auto scalled instance type) ----> Key pair name 
+                                            --> Network settings ---> Storage ---> Tags ----> " Create lunch template"
+
+   NOTE: 
+        Lunch Template vs Lunch Configuration
+          LT ---> its a modern mechnisum of lunching a template, where it provides a new feature called "Versioning" of Templates.
+          LC ---> its a traditional way of lunching a template , where any changes/edit in image needed to made, it has to be from selecting a new instance itself from the begining
+
+Elastic Load Balancing (ELB)
+
+  What It Does
+      Stands in front of your servers.
+      Receives every user request.
+      Distributes (balances) them across healthy EC2 instances.
+      Checks if an instance is healthy; if not, stops sending traffic there.
+      
+  Key ELB Features (Conceptually)
+      Traffic Distribution: spreads users to multiple servers.
+      Health Checks: pings each instance (e.g., HTTP GET /) — removes unhealthy ones automatically.
+      Automatic Scaling Ready: works with Auto Scaling Groups.
+      High Availability: lives in multiple Availability Zones automatically.
+
+ELB
+  1. Traffic Distribution
+    1. Round Robin (default for HTTP/HTTPS): each request goes to the next instance.
+    2. Least Outstanding Requests (ALB): sends new traffic to the instance with least pending requests.
+    3. Hash/IP based (NLB/ALB advanced): can stick a user to the same server if needed.
+  
+  2. Health Checks
+      What happens:      
+        The ELB constantly pings each target (EC2/IP/Lambda) on a specific protocol, port and path.
+             Example: HTTP GET http://<server>/health.
+        If the target fails (e.g., no response, 5xx errors), it’s marked unhealthy.
+        ELB stops sending users to unhealthy targets until they recover.
+      
+  3. Automatic Scaling Ready
+     What happens:
+        The Target Group connected to the ELB can be backed by an Auto Scaling Group (ASG).
+        When traffic grows and ASG adds new EC2 instances, they are automatically registered to the Target Group and start receiving traffic.
+        When traffic drops, ASG terminates instances, and ELB stops sending requests to them.
+  
+  4. High Availability (Multi-AZ)
+    What happens:
+        ELB is designed to work across multiple Availability Zones (AZs) in a region.
+        If one AZ (data center) goes down, ELB can still route traffic to servers in another AZ.
+        Users keep getting service without knowing there was a failure.
+  
+  
+Types of ELBs?
+    1. Application Load Balancer (ALB)
+          Use for: Websites & APIs (HTTP / HTTPS).
+          Layer 7 aware: Understands web traffic.
+          Smart routing: Can send requests to different servers based on URL/path/host.
+          Most common for web apps.
+
+    2. Network Load Balancer (NLB)
+         Use for: Very fast, low-latency connections (TCP / UDP).
+         Layer 4: Does not look inside HTTP, just forwards packets.
+         Static IP support: Can use fixed public IPs.
+         Great for non-web apps, gaming servers, databases, or when you need extreme performance.
+
+   3. Gateway Load Balancer (GWLB)
+         Gateway LB for advanced security appliances
+         Newest type.
+         Purpose: Put security appliances (firewalls, intrusion detection systems) behind a single entry point.
+         Works at layer 3/4, uses GENEVE protocol to send traffic to virtual appliances.
+         Not used for normal web apps — for network inspection / security setups.
+      
+   4. Classic LB- Legacy
+
+
